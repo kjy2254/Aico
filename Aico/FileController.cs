@@ -11,9 +11,8 @@ namespace Aico
     {
         static void Main(String[] args)
         {
-            const double mod = 1000000000000000000;
-
             string path = @"C:\persist-root";
+            //Console.WriteLine(path);
             string textValue = System.IO.File.ReadAllText(path).Replace(@"\", "");
             textValue = textValue.Replace("{", "{\n");
             textValue = textValue.Replace("}", "\n}");
@@ -46,58 +45,58 @@ namespace Aico
                     string temp = separatedByLine[j].Substring(0, separatedByLine[j].IndexOf(':')+1);
                     switch (temp){
                         case "id:":
-                            matrix[i].Add("id", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':')+1));
+                            //matrix[i].Add("id", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':')+1));
                             break;
                         case "blockNumber:":
-                            matrix[i].Add("blockNumber", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
+                            //matrix[i].Add("blockNumber", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
                             break;
                         case "networkID:":
-                            matrix[i].Add("networkID", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
+                            //matrix[i].Add("networkID", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
                             break;
                         case "chainId:":
-                            matrix[i].Add("chainId", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
+                            //matrix[i].Add("chainId", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
                             break;
                         case "status:":
-                            matrix[i].Add("status", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
+                            //matrix[i].Add("status", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
                             break;
                         case "time:":
-                            matrix[i].Add("time", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
+                            matrix[i].Add("time", TimeStampToDateTime(separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1)));
                             break;
                         case "from:":
                             matrix[i].Add("from", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
                             break;
                         case "gas:":
-                            matrix[i].Add("gas", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
+                            //matrix[i].Add("gas", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
                             break;
                         case "gasPrice:":
-                            matrix[i].Add("gasPrice", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
+                            //matrix[i].Add("gasPrice", hexToEther(separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1)));
                             break;
                         case "gasUsed:":
-                            matrix[i].Add("gasUsed", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
+                            //matrix[i].Add("gasUsed", hexToEther(separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1)));
                             break;
                         case "nonce:":
-                            matrix[i].Add("nonce", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
+                            //matrix[i].Add("nonce", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
                             break;
                         case "to:":
                             matrix[i].Add("to", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
                             break;
                         case "value:":
-                            matrix[i].Add("value", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
+                            matrix[i].Add("value", hexToEther(separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1)));
                             break;
                         case "maxFeePerGas:":
-                            matrix[i].Add("maxFeePerGas", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
+                            //matrix[i].Add("maxFeePerGas", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
                             break;
                         case "maxPriorityFeePerGas:":
-                            matrix[i].Add("maxPriorityFeePerGas", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
+                            //matrix[i].Add("maxPriorityFeePerGas", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
                             break;
                         case "estimatedBaseFee:":
-                            matrix[i].Add("estimatedBaseFee", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
+                            //matrix[i].Add("estimatedBaseFee", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
                             break;
                         case "verifiedOnBlockchain:":
-                            matrix[i].Add("verifiedOnBlockchain", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
+                            //matrix[i].Add("verifiedOnBlockchain", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
                             break;
                         case "rawTransaction:":
-                            matrix[i].Add("rawTransaction", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
+                            //matrix[i].Add("rawTransaction", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
                             break;
                         case "transactionHash:":
                             matrix[i].Add("transactionHash", separatedByLine[j].Substring(separatedByLine[j].IndexOf(':') + 1));
@@ -107,24 +106,39 @@ namespace Aico
             }
 
             string output = "";
-            for(int i = 0; i < matrix.Length; i++)
+            int transactionNumber = 1;
+            for(int i = matrix.Length-1; i >= 0; i--)
             {
-                output += "transaction #" + (i+1) + "\n";
+                output += "transaction #" + transactionNumber + "\n";
+                transactionNumber++;
                 //Console.WriteLine("\ntransaction #{0}", i+1);
                 foreach (var pair in matrix[i])
                 {
                     //Console.WriteLine("{0}:{1}", pair.Key, pair.Value);
-                    output += pair.Key + ":" + pair.Value + "\n";
+                    output += pair.Key + ": " + pair.Value + "\n";
                 }
                 output += "\n";
             }
             Console.WriteLine(output);
 
             string savePath = @"C:\test\output.txt";
-            //File.WriteAllText(savePath, output);
-
-            double test = 340657944167;
-            Console.Write(test / mod);
+            File.WriteAllText(savePath, output);
+        }
+        static string hexToEther(string hex)
+        {
+            double mod = 1000000000000000000;
+            double dec = Convert.ToInt64(hex, 16)/mod;
+            string ether = dec.ToString("0.###############") + " Ether";
+            //Console.WriteLine(ether);
+            return ether;
+        }
+        static string TimeStampToDateTime(string timeStamp)
+        {
+            DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            dt = dt.AddMilliseconds(Convert.ToInt64(timeStamp)).ToLocalTime();
+            string date = dt.ToString();
+            //Console.WriteLine(date);
+            return date;
         }
     }
 }
